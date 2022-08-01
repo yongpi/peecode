@@ -262,6 +262,42 @@ func dailyTemperatures(temperatures []int) []int {
 	return res
 }
 
+func extraAbs(num []int) []int {
+	result := make([]int, len(num))
+
+	result[0] = 1
+	for i := 1; i < len(num); i++ {
+		result[i] = num[i-1] * result[i-1]
+	}
+
+	ra := 1
+	for i := len(num) - 1; i >= 0; i-- {
+		result[i] = result[i] * ra
+		ra = ra * num[i]
+	}
+
+	return result
+}
+
+func maxWindow(num []int, k int) int {
+	var max int
+	for i := 0; i < k; i++ {
+		max += num[i]
+	}
+
+	for i := 1; i <= len(num)-k; i++ {
+		var count int
+		for j := i; j < i+k; j++ {
+			count += num[j]
+		}
+		if count > max {
+			max = count
+		}
+	}
+
+	return max
+}
+
 func main() {
-	fmt.Println(dailyTemperatures([]int{34, 80, 80, 80, 34, 80, 80, 80, 34, 34}))
+	fmt.Println(maxWindow([]int{1, 3, -1, -3, 5, 3, 6, 7}, 3))
 }

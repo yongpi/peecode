@@ -24,7 +24,7 @@ func Position(list []int, lo, hi int) int {
 	j := hi
 
 	for {
-		for ; list[i] < cv; i++ {
+		for ; list[i] <= cv; i++ {
 			if i == hi {
 				break
 			}
@@ -51,7 +51,7 @@ func ExChange(list []int, lo, hi int) {
 }
 
 func main() {
-	fmt.Println(Quick([]int{2, 0, 2, 1, 1, 0}))
+	fmt.Println(Quick([]int{2, 2, 3, 1, 5, 2, 4}))
 }
 
 func Position2(list []int, lo, hi int) int {
