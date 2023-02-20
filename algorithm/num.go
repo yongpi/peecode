@@ -542,6 +542,77 @@ func divide(a, b int) int {
 
 }
 
+func findMaximumXOR(nums []int32) int {
+	root := &NumTree{}
+	root.add(nums[0])
+	mv := 0
+
+	for i := 1; i < len(nums); i++ {
+		v := root.check(nums[i])
+		if v > mv {
+			mv = v
+		}
+
+		root.add(nums[i])
+	}
+
+	return mv
+}
+
+type NumTree struct {
+	Left  *NumTree
+	Right *NumTree
+}
+
+func (t *NumTree) add(num int32) {
+	cur := t
+	for i := 30; i >= 0; i-- {
+		value := num >> i & 1
+		if value == 1 {
+			if cur.Left == nil {
+				cur.Left = &NumTree{}
+			}
+			cur = cur.Left
+		} else {
+			if cur.Right == nil {
+				cur.Right = &NumTree{}
+			}
+			cur = cur.Right
+		}
+	}
+}
+
+func (t *NumTree) check(num int32) int {
+	var ans int
+	cur := t
+	for i := 30; i >= 0; i-- {
+		value := num >> i & 1
+		if value == 1 && cur.Right != nil {
+			ans |= 1 << i
+			cur = cur.Right
+			continue
+		}
+
+		if value == 1 && cur.Right == nil {
+			cur = cur.Left
+			continue
+		}
+
+		if value == 0 && cur.Left != nil {
+			ans |= 1 << i
+			cur = cur.Left
+			continue
+		}
+
+		if value == 0 && cur.Left == nil {
+			cur = cur.Right
+			continue
+		}
+	}
+
+	return ans
+}
+
 func main() {
-	fmt.Println(divide(-3, -9))
+	fmt.Println(findMaximumXOR([]int32{3, 10, 5, 25, 2, 8}))
 }

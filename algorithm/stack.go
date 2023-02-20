@@ -64,6 +64,30 @@ func canPop(in, out []int) bool {
 	return oi == len(out)
 }
 
+func rain2(rain []int) int {
+	var stack []int
+	var ans int
+	for i := 0; i < len(rain); i++ {
+		for len(stack) > 0 && rain[stack[len(stack)-1]] < rain[i] {
+			ci := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			if len(stack) == 0 {
+				break
+			}
+
+			ri := stack[len(stack)-1]
+			mh := min(rain[ri], rain[i])
+			width := i - ri - 1
+
+			ans += (mh - rain[ci]) * width
+		}
+
+		stack = append(stack, i)
+	}
+
+	return ans
+}
+
 func main() {
 	//stack := NewMinStack()
 	//stack.Push(10)

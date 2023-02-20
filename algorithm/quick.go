@@ -51,7 +51,7 @@ func ExChange(list []int, lo, hi int) {
 }
 
 func main() {
-	fmt.Println(Quick([]int{2, 2, 3, 1, 5, 2, 4}))
+	fmt.Println(Quick([]int{0, 5, 9, 2, 3, 5, 6, 7}))
 }
 
 func Position2(list []int, lo, hi int) int {

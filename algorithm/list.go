@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 )
 
 func MaxAbs(num []int) int {
@@ -726,8 +727,120 @@ func mulMin(nums []int, k int) int {
 
 }
 
+func bucket(num []int, t, k int) bool {
+	getID := func(value, t int) int {
+		if value > 0 {
+			return value / t
+		}
+		return value/t - 1
+	}
+
+	hm := make(map[int]int)
+	for i := 0; i < len(num); i++ {
+		id := getID(num[i], t+1)
+
+		if _, ok := hm[id]; ok {
+			return true
+		}
+
+		if y, ok := hm[id-1]; ok && abs(y, num[i]) < t {
+			return true
+		}
+
+		if y, ok := hm[id+1]; ok && abs(y, num[i]) < t {
+			return true
+		}
+
+		if i > k {
+			delete(hm, getID(num[i-k], t+1))
+		}
+	}
+
+	return false
+}
+
+func eatBanana(num []int, k int) int {
+	var mb int
+	for _, value := range num {
+		if value > mb {
+			mb = value
+		}
+	}
+
+	canEat := func(speed int) bool {
+		var count int
+		for _, value := range num {
+			if speed >= value {
+				count++
+				continue
+			}
+
+			for lv := value; lv > 0; lv -= speed {
+				count++
+			}
+		}
+
+		if count <= k {
+			return true
+		}
+
+		return false
+	}
+
+	ls, hs := 1, mb
+	ans := math.MaxInt32
+
+	for ls <= hs {
+		mid := ls + (hs-ls)/2
+		if canEat(mid) {
+			ans = min(mid, ans)
+			hs = mid - 1
+		} else {
+			ls = mid + 1
+		}
+	}
+
+	return ans
+}
+
+func arrayTwoRank(arr1, arr2 []int) []int {
+	mv := arr1[0]
+	for i := 1; i < len(arr1); i++ {
+		mv = max(mv, arr1[i])
+	}
+
+	fa := make([]int, mv+1)
+
+	for _, value := range arr1 {
+		fa[value]++
+	}
+
+	var ans []int
+	for _, value := range arr2 {
+		for ; fa[value] > 0; fa[value]-- {
+			ans = append(ans, value)
+		}
+	}
+
+	for key, value := range fa {
+		if value > 0 {
+			ans = append(ans, key)
+		}
+	}
+
+	return ans
+}
+
+func abs(x, y int) int {
+	if x > y {
+		return x - y
+	}
+
+	return y - x
+}
+
 func main() {
-	fmt.Println(mulMin([]int{10, 5, 2, 6}, 100))
+	fmt.Println(arrayTwoRank([]int{2, 3, 1, 3, 2, 4, 6, 7, 9, 2, 19}, []int{2, 1, 4, 3, 9, 6}))
 	//fmt.Println(calNum([][]string{{"a", "b"}, {"b", "c"}, {"bc", "cd"}}, []float64{1.5, 2.5, 5.0}, [][]string{{"a", "c"}, {"c", "b"}, {"bc", "cd"}, {"cd", "bc"}}))
 	//fmt.Println(matrixSearchString([][]byte{{'A', 'B', 'C', 'E'}, {'S', 'F', 'C', 'S'}, {'A', 'D', 'E', 'E'}}, "ABCCED"))
 }

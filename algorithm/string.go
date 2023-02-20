@@ -305,6 +305,33 @@ func findMinDifference(timePoints []string) int {
 	return mv
 }
 
+func subDistance(str, sub string) int {
+	n, m := len(str), len(sub)
+
+	op := make([][]int, n+1)
+	for i := 0; i < n+1; i++ {
+		op[i] = make([]int, m+1)
+		op[i][0] = i
+	}
+
+	for i := 0; i < m+1; i++ {
+		op[0][i] = i
+	}
+
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= m; j++ {
+			if str[i-1] == sub[j-1] {
+				op[i][j] = op[i-1][j-1]
+			} else {
+				op[i][j] = min(op[i-1][j], min(op[i-1][j-1], op[i][j-1])) + 1
+			}
+		}
+
+	}
+
+	return op[n][m]
+}
+
 func main() {
 	fmt.Println(findMinDifference([]string{"23:24", "23:18", "00:02"}))
 }
